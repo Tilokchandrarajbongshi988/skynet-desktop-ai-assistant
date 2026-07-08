@@ -21,8 +21,8 @@ electron.contextBridge.exposeInMainWorld("luna", {
   },
   chat: {
     getMessages: () => electron.ipcRenderer.invoke('chat:getMessages'),
-    sendFakeMessage: (message: string) =>
-      electron.ipcRenderer.invoke('chat:sendFakeMessage', message),
+    sendMessage: (message: { conversationId?: number; content: string }) =>
+      electron.ipcRenderer.invoke('chat:sendMessage', message),
   },
   memories: {
     list: () => electron.ipcRenderer.invoke('memory:list'),

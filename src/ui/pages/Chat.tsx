@@ -9,6 +9,7 @@ type ChatProps = {
 function Chat({ assistantName }: ChatProps) {
   const [messages, setMessages] = useState<LunaChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -28,8 +29,15 @@ function Chat({ assistantName }: ChatProps) {
   }, []);
 
   async function handleSend(content: string) {
-    const updatedMessages = await window.luna.chat.sendFakeMessage(content);
-    setMessages(updatedMessages);
+    setIsSending(true);
+
+    try {
+      const conversationId = messages.at(-1)?.conversationId;
+      const updatedMessages = await window.luna.chat.sendMessage({ conversationId, content });
+      setMessages(updatedMessages);
+    } finally {
+      setIsSending(false);
+    }
   }
 
   return (
@@ -40,7 +48,7 @@ function Chat({ assistantName }: ChatProps) {
           Talk with {assistantName}
         </h2>
         <p className="mt-1 text-sm text-slate-500">
-          Phase 2 saves messages in SQLite. Ollama will replace the fake response later.
+          Chat now uses local Ollama with qwen2.5:3b-instruct and saves messages in SQLite.
         </p>
       </header>
 
@@ -57,6 +65,8 @@ function Chat({ assistantName }: ChatProps) {
         {messages.map((message) => (
           <ChatMessage key={message.id} role={message.role} content={message.content} />
         ))}
+
+        {isSending && <p className="text-sm text-slate-500">Luna is thinking...</p>}
       </div>
 
       <ChatInput onSend={handleSend} />

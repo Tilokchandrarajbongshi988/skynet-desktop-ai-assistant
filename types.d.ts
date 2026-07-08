@@ -43,7 +43,10 @@ interface Window {
     };
     chat: {
       getMessages: () => Promise<LunaChatMessage[]>;
-      sendFakeMessage: (message: string) => Promise<LunaChatMessage[]>;
+      sendMessage: (message: {
+        conversationId?: number;
+        content: string;
+      }) => Promise<LunaChatMessage[]>;
     };
     memories: {
       list: () => Promise<unknown[]>;

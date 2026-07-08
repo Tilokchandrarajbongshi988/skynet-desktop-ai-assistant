@@ -62,34 +62,41 @@ export function getMessages(conversationId = getOrCreateConversation()) {
   return rows.map(mapMessage);
 }
 
-export function sendFakeMessage(content: string) {
+export function getRecentMessages(conversationId = getOrCreateConversation(), limit = 12) {
+  const statement = getDatabase().prepare(
+    `SELECT *
+     FROM messages
+     WHERE conversation_id = ?
+     ORDER BY id DESC
+     LIMIT ?`,
+  );
+  statement.bind([conversationId, limit]);
+
+  const rows: MessageRow[] = [];
+  while (statement.step()) {
+    rows.push(statement.getAsObject() as MessageRow);
+  }
+  statement.free();
+
+  return rows.reverse().map(mapMessage);
+}
+
+export function saveMessage(
+  conversationId: number,
+  role: ChatMessageRecord['role'],
+  content: string,
+) {
   const db = getDatabase();
-  const conversationId = getOrCreateConversation();
   const now = new Date().toISOString();
 
-  db.run('BEGIN TRANSACTION');
+  db.run('INSERT INTO messages (conversation_id, role, content, created_at) VALUES (?, ?, ?, ?)', [
+    conversationId,
+    role,
+    content,
+    now,
+  ]);
+  db.run('UPDATE conversations SET updated_at = ? WHERE id = ?', [now, conversationId]);
+  saveDatabase();
 
-  try {
-    db.run(
-      'INSERT INTO messages (conversation_id, role, content, created_at) VALUES (?, ?, ?, ?)',
-      [conversationId, 'user', content, now],
-    );
-
-    db.run(
-      'INSERT INTO messages (conversation_id, role, content, created_at) VALUES (?, ?, ?, ?)',
-      [conversationId, 'assistant', 'I received your message.', new Date().toISOString()],
-    );
-
-    db.run('UPDATE conversations SET updated_at = ? WHERE id = ?', [
-      new Date().toISOString(),
-      conversationId,
-    ]);
-    db.run('COMMIT');
-    saveDatabase();
-  } catch (error) {
-    db.run('ROLLBACK');
-    throw error;
-  }
-
-  return getMessages(conversationId);
+  return getLastInsertId();
 }
