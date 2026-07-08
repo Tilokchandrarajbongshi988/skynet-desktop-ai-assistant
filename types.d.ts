@@ -10,16 +10,46 @@ type StaticData = {
   totalMemoryGB: number;
 };
 
-type EventPayloadMapping = {
-  statistics: Statistics;
-  getStaticData: StaticData;
+type SetupData = {
+  userName: string;
+  assistantName: string;
+  theme: 'system' | 'light' | 'dark';
+  responseStyle: 'balanced' | 'concise' | 'detailed';
+};
+
+type LunaSettings = SetupData & {
+  preferredLanguage: string;
+  modelName: string;
+  setupCompleted: boolean;
+};
+
+type LunaChatMessage = {
+  id: number;
+  conversationId: number;
+  role: 'user' | 'assistant';
+  content: string;
+  createdAt: string;
 };
 
 interface Window {
-  electron: {
+  luna: {
     subscribeStatistics: (
       callback: (statistics: Statistics) => void
     ) => void;
     getStaticData: () => Promise<StaticData>;
+    settings: {
+      getSettings: () => Promise<LunaSettings>;
+      saveSetup: (data: SetupData) => Promise<LunaSettings>;
+    };
+    chat: {
+      getMessages: () => Promise<LunaChatMessage[]>;
+      sendFakeMessage: (message: string) => Promise<LunaChatMessage[]>;
+    };
+    memories: {
+      list: () => Promise<unknown[]>;
+    };
+    notes: {
+      list: () => Promise<unknown[]>;
+    };
   };
 }

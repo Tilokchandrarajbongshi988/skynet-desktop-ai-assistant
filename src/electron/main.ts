@@ -1,11 +1,35 @@
-import {app, BrowserWindow, ipcMain} from 'electron';
 import path from "path";
+import { createRequire } from 'node:module';
 import {isDev} from './utils.js';
 import { pollResources, getStaticData } from './resourceManager.js';
 import { getPreloadPath } from './pathResolver.js';
+import { getDatabasePath, initializeDatabase } from './models/db.js';
+import { registerChatController } from './controllers/chatController.js';
+import { registerSettingsController } from './controllers/settingsController.js';
+import { registerMemoryController } from './controllers/memoryController.js';
+import { registerNoteController } from './controllers/noteController.js';
+import { registerAppController } from './controllers/appController.js';
+import { registerFileController } from './controllers/fileController.js';
 
-app.on('ready', () => {
+const require = createRequire(import.meta.url);
+const { app, BrowserWindow, ipcMain } = require('electron');
+
+app.whenReady().then(async () => {
+  await initializeDatabase();
+  console.log(`Luna database: ${getDatabasePath()}`);
+  registerSettingsController(ipcMain);
+  registerChatController(ipcMain);
+  registerMemoryController(ipcMain);
+  registerNoteController(ipcMain);
+  registerAppController(ipcMain);
+  registerFileController(ipcMain);
+
   const mainWindow = new BrowserWindow({
+    width: 1180,
+    height: 760,
+    minWidth: 920,
+    minHeight: 640,
+    title: 'Luna',
     webPreferences: {
       preload: getPreloadPath()
     },
@@ -13,7 +37,7 @@ app.on('ready', () => {
   if (isDev()) {
     mainWindow.loadURL('http://localhost:5123');
   }else {
-    mainWindow.loadFile(path.join(app.getAppPath(), '/dist-react/index.html'));
+    mainWindow.loadFile(path.join(app.getAppPath(), 'dist-react', 'index.html'));
   }
 
   pollResources(mainWindow);
@@ -21,5 +45,7 @@ app.on('ready', () => {
   ipcMain.handle('getStaticData', () => {
     return getStaticData();
   });
+
+  // Future controllers for Ollama and advanced actions will be registered here.
 });
  
