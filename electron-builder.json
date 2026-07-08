@@ -1,6 +1,14 @@
 {
-  "appId": "com.n-ziermann.electron-course",
-  "files": ["dist-electron", "dist-react"],
+  "appId": "com.luna.desktop",
+  "productName": "Luna",
+  "directories": {
+    "output": "release"
+  },
+  "files": [
+    "dist-electron",
+    "dist-react",
+    "package.json"
+  ],
   "extraResources": ["dist-electron/preload.cjs"],
   "mac": {
     "target": "dmg"
@@ -11,9 +19,18 @@
   },
   "win": {
     "icon": "desktopIcon.png",
-    "target": ["portable", "msi"]
+    "target": [
+      "nsis",
+      "portable"
+    ]
   },
-  "msi": {
-    "additionalLightArgs": ["-sval"]
+  "nsis": {
+    "artifactName": "${productName}-Setup-${version}-${arch}.${ext}",
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true
+  },
+  "portable": {
+    "artifactName": "${productName}-Portable-${version}-${arch}.${ext}"
   }
 }

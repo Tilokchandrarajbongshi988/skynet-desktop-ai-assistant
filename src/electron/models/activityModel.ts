@@ -1,4 +1,4 @@
-import { getDatabase } from './db.js';
+import { getDatabase, saveDatabase } from './db.js';
 
 export type ActivityRecord = {
   id: number;
@@ -32,4 +32,12 @@ export function getActivities(): ActivityRecord[] {
     status: row.status,
     createdAt: row.created_at,
   }));
+}
+
+export function createActivity(actionType: string, description: string, status = 'success') {
+  getDatabase().run(
+    'INSERT INTO activities (action_type, description, status, created_at) VALUES (?, ?, ?, ?)',
+    [actionType, description, status, new Date().toISOString()],
+  );
+  saveDatabase();
 }

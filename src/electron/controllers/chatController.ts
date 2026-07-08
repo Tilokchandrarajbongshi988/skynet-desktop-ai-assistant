@@ -6,7 +6,9 @@ import {
   saveMessage,
 } from '../models/chatModel.js';
 import { getMemories } from '../models/memoryModel.js';
+import { createMemory } from '../models/memoryModel.js';
 import { getSettings } from '../models/settingsModel.js';
+import { detectAction } from '../services/actionRouterService.js';
 import { chatWithOllama } from '../services/ollamaService.js';
 
 type SendMessageInput = {
@@ -29,6 +31,27 @@ async function sendMessage(input: SendMessageInput) {
   const conversationId = input.conversationId ?? getOrCreateConversation();
   saveMessage(conversationId, 'user', content);
 
+  const action = detectAction(content);
+  if (action) {
+    saveMessage(
+      conversationId,
+      'assistant',
+      'I can do that, but I need your permission first.',
+    );
+
+    return {
+      messages: getMessages(conversationId),
+      action,
+    };
+  }
+
+  const memoryText = getRememberThatText(content);
+  if (memoryText) {
+    createMemory(memoryText);
+    saveMessage(conversationId, 'assistant', "Got it, I'll remember that.");
+    return { messages: getMessages(conversationId) };
+  }
+
   const settings = getSettings();
   const memories = getMemories();
   const recentMessages = getRecentMessages(conversationId);
@@ -44,7 +67,17 @@ async function sendMessage(input: SendMessageInput) {
   });
 
   saveMessage(conversationId, 'assistant', assistantResponse);
-  return getMessages(conversationId);
+  return { messages: getMessages(conversationId) };
+}
+
+function getRememberThatText(content: string) {
+  const prefix = 'remember that';
+
+  if (!content.toLowerCase().startsWith(prefix)) {
+    return null;
+  }
+
+  return content.slice(prefix.length).trim();
 }
 
 function buildSystemPrompt({

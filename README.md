@@ -1,32 +1,78 @@
-# React + TypeScript + Vite
+# Luna
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Luna is a privacy-first local AI desktop assistant built with Electron, React, TypeScript, Tailwind CSS, SQLite, and Ollama.
 
-Currently, two official plugins are available:
+Luna keeps app data local and connects to Ollama on your computer. It does not include Ollama model files inside the app package.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Requirements
 
-## React Compiler
+- Node.js
+- npm
+- Ollama
+- The local model `qwen2.5:3b-instruct`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Install Ollama from:
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```powershell
+https://ollama.com/download
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Then install the model:
+
+```powershell
+ollama pull qwen2.5:3b-instruct
+```
+
+Make sure Ollama is running before starting Luna.
+
+## Development
+
+Install dependencies:
+
+```powershell
+npm install
+```
+
+Run Luna in development mode:
+
+```powershell
+npm run dev
+```
+
+This starts the Vite React app and the Electron desktop window.
+
+## Production Build
+
+Build the React and Electron files:
+
+```powershell
+npm run build
+```
+
+## Windows Package
+
+Create the Windows installer and portable executable:
+
+```powershell
+npm run dist
+```
+
+The packaged files are created in:
+
+```powershell
+release/
+```
+
+## Before Running The Packaged App
+
+Users must install Ollama separately and run:
+
+```powershell
+ollama pull qwen2.5:3b-instruct
+```
+
+Luna talks to Ollama locally at:
+
+```powershell
+http://localhost:11434/api/chat
+```

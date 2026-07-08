@@ -24,10 +24,21 @@ electron.contextBridge.exposeInMainWorld("luna", {
     sendMessage: (message: { conversationId?: number; content: string }) =>
       electron.ipcRenderer.invoke('chat:sendMessage', message),
   },
-  memories: {
-    list: () => electron.ipcRenderer.invoke('memory:list'),
+  actions: {
+    executeAction: (action: unknown, conversationId?: number) =>
+      electron.ipcRenderer.invoke('actions:execute', action, conversationId),
+  },
+  memory: {
+    getMemories: () => electron.ipcRenderer.invoke('memory:list'),
+    createMemory: (content: string) => electron.ipcRenderer.invoke('memory:create', content),
+    deleteMemory: (id: number) => electron.ipcRenderer.invoke('memory:delete', id),
+    clearMemories: () => electron.ipcRenderer.invoke('memory:clear'),
   },
   notes: {
     list: () => electron.ipcRenderer.invoke('notes:list'),
+  },
+  files: {
+    summarizeTextFile: (fileContent: string) =>
+      electron.ipcRenderer.invoke('files:summarizeTextFile', fileContent),
   },
 });

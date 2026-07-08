@@ -11,6 +11,11 @@ type OllamaChatOptions = {
   messages: ChatMessageRecord[];
 };
 
+type OllamaPromptOptions = {
+  modelName?: string;
+  prompt: string;
+};
+
 type OllamaResponse = {
   message?: {
     content?: string;
@@ -49,4 +54,21 @@ export async function chatWithOllama({ modelName, systemPrompt, messages }: Olla
   } catch {
     return OLLAMA_NOT_RUNNING_MESSAGE;
   }
+}
+
+export async function chatWithPrompt({ modelName, prompt }: OllamaPromptOptions) {
+  return chatWithOllama({
+    modelName,
+    systemPrompt:
+      'You are Luna, a privacy-first local desktop assistant. Keep responses practical and clear.',
+    messages: [
+      {
+        id: 0,
+        conversationId: 0,
+        role: 'user',
+        content: prompt,
+        createdAt: new Date().toISOString(),
+      },
+    ],
+  });
 }

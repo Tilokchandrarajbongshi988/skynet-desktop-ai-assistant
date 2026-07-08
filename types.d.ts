@@ -31,6 +31,42 @@ type LunaChatMessage = {
   createdAt: string;
 };
 
+type LunaMemory = {
+  id: number;
+  content: string;
+  category: string | null;
+  createdAt: string;
+};
+
+type LunaAction =
+  | {
+      type: 'CREATE_NOTE';
+      needsPermission: true;
+      payload: {
+        title: string;
+        content: string;
+      };
+    }
+  | {
+      type: 'OPEN_APP';
+      needsPermission: true;
+      payload: {
+        appName: 'chrome' | 'spotify' | 'notepad' | 'vscode' | 'calculator';
+      };
+    }
+  | {
+      type: 'SEARCH_FILES';
+      needsPermission: true;
+      payload: {
+        query: string;
+      };
+    };
+
+type LunaChatResult = {
+  messages: LunaChatMessage[];
+  action?: LunaAction;
+};
+
 interface Window {
   luna: {
     subscribeStatistics: (
@@ -46,13 +82,25 @@ interface Window {
       sendMessage: (message: {
         conversationId?: number;
         content: string;
-      }) => Promise<LunaChatMessage[]>;
+      }) => Promise<LunaChatResult>;
     };
-    memories: {
-      list: () => Promise<unknown[]>;
+    actions: {
+      executeAction: (
+        action: LunaAction,
+        conversationId?: number,
+      ) => Promise<{ message: string }>;
+    };
+    memory: {
+      getMemories: () => Promise<LunaMemory[]>;
+      createMemory: (content: string) => Promise<LunaMemory | null>;
+      deleteMemory: (id: number) => Promise<boolean>;
+      clearMemories: () => Promise<boolean>;
     };
     notes: {
       list: () => Promise<unknown[]>;
+    };
+    files: {
+      summarizeTextFile: (fileContent: string) => Promise<{ summary: string }>;
     };
   };
 }

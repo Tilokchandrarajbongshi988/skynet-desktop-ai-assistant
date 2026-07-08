@@ -14,13 +14,25 @@ declare global {
         sendMessage: (message: {
           conversationId?: number;
           content: string;
-        }) => Promise<LunaChatMessage[]>;
+        }) => Promise<LunaChatResult>;
       };
-      memories: {
-        list: () => Promise<unknown[]>;
+      actions: {
+        executeAction: (
+          action: LunaAction,
+          conversationId?: number,
+        ) => Promise<{ message: string }>;
+      };
+      memory: {
+        getMemories: () => Promise<LunaMemory[]>;
+        createMemory: (content: string) => Promise<LunaMemory | null>;
+        deleteMemory: (id: number) => Promise<boolean>;
+        clearMemories: () => Promise<boolean>;
       };
       notes: {
         list: () => Promise<unknown[]>;
+      };
+      files: {
+        summarizeTextFile: (fileContent: string) => Promise<{ summary: string }>;
       };
     };
   }

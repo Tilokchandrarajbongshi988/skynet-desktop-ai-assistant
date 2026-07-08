@@ -1,4 +1,4 @@
-import { getDatabase } from './db.js';
+import { getDatabase, getLastInsertId, saveDatabase } from './db.js';
 
 export type NoteRecord = {
   id: number;
@@ -32,4 +32,34 @@ export function getNotes(): NoteRecord[] {
     filePath: row.file_path,
     createdAt: row.created_at,
   }));
+}
+
+export function createNote(title: string, content: string, filePath: string) {
+  getDatabase().run(
+    'INSERT INTO notes (title, content, file_path, created_at) VALUES (?, ?, ?, ?)',
+    [title, content, filePath, new Date().toISOString()],
+  );
+  saveDatabase();
+
+  return getNoteById(getLastInsertId());
+}
+
+function getNoteById(id: number): NoteRecord | null {
+  const statement = getDatabase().prepare('SELECT * FROM notes WHERE id = ? LIMIT 1');
+  statement.bind([id]);
+
+  const row = statement.step() ? (statement.getAsObject() as NoteRow) : null;
+  statement.free();
+
+  if (!row) {
+    return null;
+  }
+
+  return {
+    id: row.id,
+    title: row.title,
+    content: row.content,
+    filePath: row.file_path,
+    createdAt: row.created_at,
+  };
 }

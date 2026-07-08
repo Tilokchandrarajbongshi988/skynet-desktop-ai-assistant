@@ -9,10 +9,23 @@ lerna-debug.log*
 
 node_modules
 dist
+release
 dist-ssr
 dist-react
 dist-electron
 *.local
+*.exe
+*.msi
+*.dmg
+*.AppImage
+*.blockmap
+*.sqlite
+*.sqlite3
+*.db
+database
+Luna Notes
+electron-dev*.log
+vite-dev*.log
 
 # Editor directories and files
 .vscode/*
