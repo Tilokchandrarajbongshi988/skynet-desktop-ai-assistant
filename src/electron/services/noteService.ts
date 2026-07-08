@@ -10,7 +10,7 @@ type CreateNoteInput = {
 };
 
 export function createNoteFile({ title, content }: CreateNoteInput) {
-  const notesDirectory = getUserDataPath('Luna Notes');
+  const notesDirectory = getUserDataPath('Skynet Notes');
   fs.mkdirSync(notesDirectory, { recursive: true });
 
   const safeTitle = sanitizeFileName(title || 'Untitled note');

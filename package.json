@@ -1,10 +1,10 @@
 {
-  "name": "luna",
+  "name": "skynet",
   "private": true,
   "version": "0.0.0",
   "description": "Privacy-first local AI desktop assistant",
-  "productName": "Luna",
-  "author": "Luna",
+  "productName": "Skynet",
+  "author": "Skynet",
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {

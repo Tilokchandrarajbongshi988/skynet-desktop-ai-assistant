@@ -1,4 +1,4 @@
-export type LunaAction =
+export type SkynetAction =
   | {
       type: 'CREATE_NOTE';
       needsPermission: true;
@@ -20,18 +20,38 @@ export type LunaAction =
       payload: {
         query: string;
       };
+    }
+  | {
+      type: 'OPEN_FOLDER';
+      folderName: FolderName;
+      needsPermission: true;
     };
 
 type AllowedAppName = 'chrome' | 'spotify' | 'notepad' | 'vscode' | 'calculator';
+export type FolderName = 'downloads' | 'desktop' | 'documents';
 
-export function detectAction(message: string): LunaAction | null {
+const dangerousWords = [
+  'delete',
+  'remove',
+  'erase',
+  'format',
+  'clear folder',
+  'move files',
+  'rename files',
+];
+
+export function detectAction(message: string): SkynetAction | null {
   const lower = message.toLowerCase();
+
+  if (hasDangerousWord(lower)) {
+    return null;
+  }
 
   if (lower.includes('create note')) {
     const noteText = message.replace(/create note/i, '').trim();
     const [titlePart, ...contentParts] = noteText.split(':');
     const title = titlePart?.trim() || 'Untitled note';
-    const content = contentParts.join(':').trim() || noteText || 'Created by Luna.';
+    const content = contentParts.join(':').trim() || noteText || 'Created by Skynet.';
 
     return {
       type: 'CREATE_NOTE',
@@ -57,7 +77,34 @@ export function detectAction(message: string): LunaAction | null {
     };
   }
 
+  const folderName = getRequestedFolder(lower);
+  if (folderName) {
+    return {
+      type: 'OPEN_FOLDER',
+      folderName,
+      needsPermission: true,
+    };
+  }
+
   return null;
+}
+
+export function getBlockedActionMessage(message: string) {
+  const lower = message.toLowerCase();
+
+  if (hasDangerousWord(lower)) {
+    return 'I cannot perform destructive file actions.';
+  }
+
+  if (lower.includes('open') && (lower.includes('c drive') || lower.includes('c:'))) {
+    return 'I can only open Downloads, Desktop, and Documents for now.';
+  }
+
+  return null;
+}
+
+function hasDangerousWord(message: string) {
+  return dangerousWords.some((word) => message.includes(word));
 }
 
 function getRequestedApp(message: string): AllowedAppName | null {
@@ -79,6 +126,35 @@ function getRequestedApp(message: string): AllowedAppName | null {
 
   if (message.includes('open calculator')) {
     return 'calculator';
+  }
+
+  return null;
+}
+
+function getRequestedFolder(message: string): FolderName | null {
+  if (
+    message.includes('open downloads') ||
+    message.includes('open download folder') ||
+    message.includes('open downloads folder') ||
+    message.includes('open my downloads')
+  ) {
+    return 'downloads';
+  }
+
+  if (
+    message.includes('open desktop') ||
+    message.includes('open desktop folder') ||
+    message.includes('open my desktop')
+  ) {
+    return 'desktop';
+  }
+
+  if (
+    message.includes('open documents') ||
+    message.includes('open documents folder') ||
+    message.includes('open my documents')
+  ) {
+    return 'documents';
   }
 
   return null;

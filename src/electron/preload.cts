@@ -8,7 +8,7 @@ type Statistics = {
   storageData: number;
 };
 
-electron.contextBridge.exposeInMainWorld("luna", {
+electron.contextBridge.exposeInMainWorld("skynet", {
   subscribeStatistics: (callback: (statistics: Statistics) => void) =>  {
     electron.ipcRenderer.on("statistics", (_: IpcRendererEvent, stats: Statistics) => {
       callback(stats);

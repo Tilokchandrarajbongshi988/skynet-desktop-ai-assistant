@@ -27,18 +27,18 @@ function FileUpload({ fileName, error, onFileLoaded, onClear, onError }: FileUpl
   }
 
   return (
-    <div className="border-t border-slate-200 bg-white px-8 py-3">
+    <div className="border-t border-black bg-yellow-50 px-8 py-3">
       <div className="flex flex-wrap items-center gap-3">
-        <label className="inline-flex cursor-pointer items-center rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+        <label className="inline-flex cursor-pointer items-center rounded-md border border-black bg-white px-3 py-2 text-sm font-semibold text-black hover:bg-yellow-100">
           Upload .txt
           <input className="sr-only" type="file" accept=".txt,text/plain" onChange={handleFileChange} />
         </label>
 
         {fileName && (
           <>
-            <span className="max-w-80 truncate text-sm text-slate-600">{fileName}</span>
+            <span className="max-w-80 truncate text-sm text-zinc-700">{fileName}</span>
             <button
-              className="rounded-md px-2 py-1 text-sm font-medium text-slate-500 hover:bg-slate-100"
+              className="rounded-md border border-black bg-white px-2 py-1 text-sm font-medium text-black hover:bg-yellow-100"
               type="button"
               onClick={onClear}
             >
@@ -47,10 +47,10 @@ function FileUpload({ fileName, error, onFileLoaded, onClear, onError }: FileUpl
           </>
         )}
 
-        {!fileName && <span className="text-sm text-slate-500">Attach a text file to summarize.</span>}
+        {!fileName && <span className="text-sm text-zinc-700">Attach a text file to summarize.</span>}
       </div>
 
-      {error && <p className="mt-2 text-sm text-rose-600">{error}</p>}
+      {error && <p className="mt-2 text-sm font-medium text-black">{error}</p>}
     </div>
   );
 }

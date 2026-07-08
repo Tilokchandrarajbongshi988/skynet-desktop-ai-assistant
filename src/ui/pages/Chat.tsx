@@ -9,10 +9,10 @@ type ChatProps = {
 };
 
 function Chat({ assistantName }: ChatProps) {
-  const [messages, setMessages] = useState<LunaChatMessage[]>([]);
+  const [messages, setMessages] = useState<SkynetChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
-  const [pendingAction, setPendingAction] = useState<LunaAction | null>(null);
+  const [pendingAction, setPendingAction] = useState<SkynetAction | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState('');
   const [uploadedFileContent, setUploadedFileContent] = useState('');
   const [fileUploadError, setFileUploadError] = useState('');
@@ -20,7 +20,7 @@ function Chat({ assistantName }: ChatProps) {
   useEffect(() => {
     let isMounted = true;
 
-    window.luna.chat.getMessages().then((storedMessages) => {
+    window.skynet.chat.getMessages().then((storedMessages) => {
       if (!isMounted) {
         return;
       }
@@ -44,7 +44,7 @@ function Chat({ assistantName }: ChatProps) {
 
     try {
       const conversationId = messages.at(-1)?.conversationId;
-      const result = await window.luna.chat.sendMessage({ conversationId, content });
+      const result = await window.skynet.chat.sendMessage({ conversationId, content });
       setMessages(result.messages);
       setPendingAction(result.action ?? null);
     } finally {
@@ -70,7 +70,7 @@ function Chat({ assistantName }: ChatProps) {
     setMessages((currentMessages) => [...currentMessages, userMessage]);
 
     try {
-      const result = await window.luna.files.summarizeTextFile(uploadedFileContent);
+      const result = await window.skynet.files.summarizeTextFile(uploadedFileContent);
       const assistantMessage = createLocalMessage('assistant', result.summary, conversationId);
       setMessages((currentMessages) => [...currentMessages, assistantMessage]);
     } finally {
@@ -99,8 +99,8 @@ function Chat({ assistantName }: ChatProps) {
 
     try {
       const conversationId = messages.at(-1)?.conversationId;
-      await window.luna.actions.executeAction(pendingAction, conversationId);
-      const updatedMessages = await window.luna.chat.getMessages();
+      await window.skynet.actions.executeAction(pendingAction, conversationId);
+      const updatedMessages = await window.skynet.chat.getMessages();
       setMessages(updatedMessages);
       setPendingAction(null);
     } finally {
@@ -116,7 +116,7 @@ function Chat({ assistantName }: ChatProps) {
         id: Date.now(),
         conversationId,
         role: 'assistant',
-        content: 'Action cancelled.',
+        content: 'Okay, I cancelled that action.',
         createdAt: new Date().toISOString(),
       },
     ]);
@@ -124,24 +124,24 @@ function Chat({ assistantName }: ChatProps) {
   }
 
   return (
-    <section className="flex min-h-screen flex-col">
-      <header className="border-b border-slate-200 bg-white px-8 py-5">
-        <p className="text-sm font-medium text-cyan-700">Chat</p>
-        <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
+    <section className="flex min-h-screen flex-col bg-white">
+      <header className="border-b border-black bg-yellow-300 px-8 py-5">
+        <p className="text-sm font-semibold text-black">Chat</p>
+        <h2 className="text-2xl font-semibold tracking-tight text-black">
           Talk with {assistantName}
         </h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-zinc-800">
           Chat now uses local Ollama with qwen2.5:3b-instruct and saves messages in SQLite.
         </p>
       </header>
 
-      <div className="flex-1 space-y-4 overflow-y-auto p-8">
-        {isLoading && <p className="text-sm text-slate-500">Loading messages...</p>}
+      <div className="flex-1 space-y-4 overflow-y-auto bg-white p-8">
+        {isLoading && <p className="text-sm text-zinc-600">Loading messages...</p>}
 
         {!isLoading && messages.length === 0 && (
           <ChatMessage
             role="assistant"
-            content="Hi, I am Luna. Send a message and I will save it locally."
+            content="Hi, I am Skynet. Send a message and I will save it locally."
           />
         )}
 
@@ -149,7 +149,7 @@ function Chat({ assistantName }: ChatProps) {
           <ChatMessage key={message.id} role={message.role} content={message.content} />
         ))}
 
-        {isSending && <p className="text-sm text-slate-500">Luna is thinking...</p>}
+        {isSending && <p className="text-sm font-medium text-zinc-700">Skynet is thinking...</p>}
       </div>
 
       <FileUpload
@@ -177,7 +177,7 @@ function createLocalMessage(
   role: 'user' | 'assistant',
   content: string,
   conversationId: number,
-): LunaChatMessage {
+): SkynetChatMessage {
   return {
     id: Date.now() + Math.floor(Math.random() * 1000),
     conversationId,

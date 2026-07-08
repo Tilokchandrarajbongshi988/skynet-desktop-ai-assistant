@@ -1,6 +1,6 @@
 {
-  "appId": "com.luna.desktop",
-  "productName": "Luna",
+  "appId": "com.skynet.desktop",
+  "productName": "Skynet",
   "directories": {
     "output": "release"
   },
@@ -9,7 +9,13 @@
     "dist-react",
     "package.json"
   ],
-  "extraResources": ["dist-electron/preload.cjs"],
+  "extraResources": [
+    "dist-electron/preload.cjs",
+    {
+      "from": "node_modules/sql.js/dist/sql-wasm.wasm",
+      "to": "sql.js/sql-wasm.wasm"
+    }
+  ],
   "mac": {
     "target": "dmg"
   },
@@ -28,7 +34,8 @@
     "artifactName": "${productName}-Setup-${version}-${arch}.${ext}",
     "oneClick": false,
     "perMachine": false,
-    "allowToChangeInstallationDirectory": true
+    "allowToChangeInstallationDirectory": true,
+    "runAfterFinish": true
   },
   "portable": {
     "artifactName": "${productName}-Portable-${version}-${arch}.${ext}"

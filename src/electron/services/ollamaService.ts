@@ -60,7 +60,7 @@ export async function chatWithPrompt({ modelName, prompt }: OllamaPromptOptions)
   return chatWithOllama({
     modelName,
     systemPrompt:
-      'You are Luna, a privacy-first local desktop assistant. Keep responses practical and clear.',
+      'You are Skynet, a privacy-first local desktop assistant. Keep responses practical and clear.',
     messages: [
       {
         id: 0,

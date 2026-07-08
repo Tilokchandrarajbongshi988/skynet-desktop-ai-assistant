@@ -12,14 +12,14 @@ function ChatMessage({ role, content }: ChatMessageProps) {
     <div className={['flex', isAssistant ? 'justify-start' : 'justify-end'].join(' ')}>
       <div
         className={[
-          'max-w-[70%] rounded-lg px-4 py-3 text-sm leading-6 shadow-sm',
+          'max-w-[70%] rounded-md border border-black px-4 py-3 text-sm leading-6',
           isAssistant
-            ? 'border border-slate-200 bg-white text-slate-800'
-            : 'bg-slate-950 text-white',
+            ? 'bg-white text-black'
+            : 'bg-yellow-300 text-black',
         ].join(' ')}
       >
-        <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
-          {isAssistant ? 'Luna' : 'You'}
+        <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-600">
+          {isAssistant ? 'Skynet' : 'You'}
         </p>
         <p>{content}</p>
       </div>

@@ -15,7 +15,7 @@ type OnboardingProps = {
 function Onboarding({ onComplete }: OnboardingProps) {
   const [formData, setFormData] = useState<SetupData>({
     userName: '',
-    assistantName: 'Luna',
+    assistantName: 'Skynet',
     theme: 'system',
     responseStyle: 'balanced',
   });
@@ -33,7 +33,7 @@ function Onboarding({ onComplete }: OnboardingProps) {
       await onComplete({
         ...formData,
         userName: formData.userName.trim() || 'Friend',
-        assistantName: formData.assistantName.trim() || 'Luna',
+        assistantName: formData.assistantName.trim() || 'Skynet',
       });
     } finally {
       setIsSaving(false);
@@ -41,23 +41,23 @@ function Onboarding({ onComplete }: OnboardingProps) {
   }
 
   return (
-    <section className="flex min-h-screen items-center justify-center p-8">
+    <section className="flex min-h-screen items-center justify-center bg-white p-8">
       <div className="w-full max-w-3xl">
-        <p className="text-sm font-semibold uppercase tracking-wide text-cyan-700">
+        <p className="inline-block border border-black bg-yellow-300 px-3 py-1 text-sm font-semibold uppercase tracking-wide text-black">
           Welcome
         </p>
-        <h2 className="mt-2 text-4xl font-semibold tracking-tight text-slate-950">
-          Set up Luna
+        <h2 className="mt-4 text-4xl font-semibold tracking-tight text-black">
+          Set up Skynet
         </h2>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-700">
           Choose the basics for your local assistant. This is saved locally in SQLite.
         </p>
 
-        <form className="mt-8 grid gap-5 rounded-lg bg-white p-6 shadow-sm" onSubmit={handleSubmit}>
+        <form className="mt-8 grid gap-5 rounded-md border border-black bg-white p-6" onSubmit={handleSubmit}>
           <label className="grid gap-2">
-            <span className="text-sm font-medium text-slate-700">User name</span>
+            <span className="text-sm font-semibold text-black">User name</span>
             <input
-              className="rounded-md border border-slate-300 px-4 py-3 outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100"
+              className="rounded-md border border-black bg-white px-4 py-3 outline-none focus:bg-yellow-50"
               placeholder="Tilok"
               value={formData.userName}
               onChange={(event) => updateField('userName', event.target.value)}
@@ -65,9 +65,9 @@ function Onboarding({ onComplete }: OnboardingProps) {
           </label>
 
           <label className="grid gap-2">
-            <span className="text-sm font-medium text-slate-700">Assistant name</span>
+            <span className="text-sm font-semibold text-black">Assistant name</span>
             <input
-              className="rounded-md border border-slate-300 px-4 py-3 outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100"
+              className="rounded-md border border-black bg-white px-4 py-3 outline-none focus:bg-yellow-50"
               value={formData.assistantName}
               onChange={(event) => updateField('assistantName', event.target.value)}
             />
@@ -75,9 +75,9 @@ function Onboarding({ onComplete }: OnboardingProps) {
 
           <div className="grid gap-5 md:grid-cols-2">
             <label className="grid gap-2">
-              <span className="text-sm font-medium text-slate-700">Theme</span>
+              <span className="text-sm font-semibold text-black">Theme</span>
               <select
-                className="rounded-md border border-slate-300 px-4 py-3 outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100"
+                className="rounded-md border border-black bg-white px-4 py-3 outline-none focus:bg-yellow-50"
                 value={formData.theme}
                 onChange={(event) => updateField('theme', event.target.value as SetupData['theme'])}
               >
@@ -88,9 +88,9 @@ function Onboarding({ onComplete }: OnboardingProps) {
             </label>
 
             <label className="grid gap-2">
-              <span className="text-sm font-medium text-slate-700">Response style</span>
+              <span className="text-sm font-semibold text-black">Response style</span>
               <select
-                className="rounded-md border border-slate-300 px-4 py-3 outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100"
+                className="rounded-md border border-black bg-white px-4 py-3 outline-none focus:bg-yellow-50"
                 value={formData.responseStyle}
                 onChange={(event) =>
                   updateField('responseStyle', event.target.value as SetupData['responseStyle'])
@@ -104,7 +104,7 @@ function Onboarding({ onComplete }: OnboardingProps) {
           </div>
 
           <button
-            className="mt-2 rounded-md bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+            className="mt-2 rounded-md border border-black bg-yellow-300 px-5 py-3 text-sm font-semibold text-black transition hover:bg-yellow-200 disabled:opacity-60"
             disabled={isSaving}
             type="submit"
           >

@@ -2,29 +2,29 @@ export {};
 
 declare global {
   interface Window {
-    luna: {
+    skynet: {
       subscribeStatistics: (callback: (statistics: Statistics) => void) => void;
       getStaticData: () => Promise<StaticData>;
       settings: {
-        getSettings: () => Promise<LunaSettings>;
-        saveSetup: (data: SetupData) => Promise<LunaSettings>;
+        getSettings: () => Promise<SkynetSettings>;
+        saveSetup: (data: SetupData) => Promise<SkynetSettings>;
       };
       chat: {
-        getMessages: () => Promise<LunaChatMessage[]>;
+        getMessages: () => Promise<SkynetChatMessage[]>;
         sendMessage: (message: {
           conversationId?: number;
           content: string;
-        }) => Promise<LunaChatResult>;
+        }) => Promise<SkynetChatResult>;
       };
       actions: {
         executeAction: (
-          action: LunaAction,
+          action: SkynetAction,
           conversationId?: number,
-        ) => Promise<{ message: string }>;
+        ) => Promise<{ success: boolean; message: string }>;
       };
       memory: {
-        getMemories: () => Promise<LunaMemory[]>;
-        createMemory: (content: string) => Promise<LunaMemory | null>;
+        getMemories: () => Promise<SkynetMemory[]>;
+        createMemory: (content: string) => Promise<SkynetMemory | null>;
         deleteMemory: (id: number) => Promise<boolean>;
         clearMemories: () => Promise<boolean>;
       };

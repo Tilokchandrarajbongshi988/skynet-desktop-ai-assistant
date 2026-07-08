@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import initSqlJs, { type Database, type SqlJsStatic } from 'sql.js';
 import { getUserDataPath } from '../utils/paths.js';
+import { isDev } from '../utils.js';
 
 let sql: SqlJsStatic | null = null;
 let database: Database | null = null;
@@ -20,7 +21,10 @@ export async function initializeDatabase(filePath = getDatabasePath()) {
   fs.mkdirSync(path.dirname(databaseFilePath), { recursive: true });
 
   sql = await initSqlJs({
-    locateFile: (file) => path.join(process.cwd(), 'node_modules', 'sql.js', 'dist', file),
+    locateFile: (file) =>
+      isDev()
+        ? path.join(process.cwd(), 'node_modules', 'sql.js', 'dist', file)
+        : path.join(process.resourcesPath, 'sql.js', file),
   });
 
   const existingData = fs.existsSync(databaseFilePath)
@@ -43,7 +47,7 @@ export function saveDatabase() {
 }
 
 export function getDatabasePath() {
-  return getUserDataPath('database', 'luna.sqlite');
+  return getUserDataPath('database', 'skynet.sqlite');
 }
 
 export function getLastInsertId() {

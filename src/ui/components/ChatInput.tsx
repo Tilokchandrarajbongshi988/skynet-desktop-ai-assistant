@@ -22,17 +22,17 @@ function ChatInput({ onSend }: ChatInputProps) {
 
   return (
     <form
-      className="flex gap-3 border-t border-slate-200 bg-white p-4"
+      className="flex gap-3 border-t border-black bg-white p-4"
       onSubmit={handleSubmit}
     >
       <input
-        className="min-w-0 flex-1 rounded-md border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100"
-        placeholder="Ask Luna anything..."
+        className="min-w-0 flex-1 rounded-md border border-black bg-white px-4 py-3 text-sm text-black outline-none transition placeholder:text-zinc-500 focus:bg-yellow-50"
+        placeholder="Ask Skynet anything..."
         value={message}
         onChange={(event) => setMessage(event.target.value)}
       />
       <button
-        className="rounded-md bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+        className="rounded-md border border-black bg-yellow-300 px-5 py-3 text-sm font-semibold text-black transition hover:bg-yellow-200"
         type="submit"
       >
         Send

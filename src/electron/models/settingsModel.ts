@@ -44,7 +44,7 @@ export function getSettings(): SettingsRecord {
 
   return {
     userName: user?.name ?? '',
-    assistantName: settings?.assistant_name ?? 'Luna',
+    assistantName: settings?.assistant_name ?? 'Skynet',
     preferredLanguage: settings?.preferred_language ?? 'English',
     theme: settings?.theme ?? 'system',
     modelName: settings?.model_name ?? 'qwen2.5:3b-instruct',

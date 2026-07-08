@@ -10,18 +10,20 @@ import { registerMemoryController } from './controllers/memoryController.js';
 import { registerNoteController } from './controllers/noteController.js';
 import { registerAppController } from './controllers/appController.js';
 import { registerFileController } from './controllers/fileController.js';
+import { registerActionController } from './controllers/actionController.js';
 
 const require = createRequire(import.meta.url);
 const { app, BrowserWindow, ipcMain } = require('electron');
 
 app.whenReady().then(async () => {
   await initializeDatabase();
-  console.log(`Luna database: ${getDatabasePath()}`);
+  console.log(`Skynet database: ${getDatabasePath()}`);
   registerSettingsController(ipcMain);
   registerChatController(ipcMain);
   registerMemoryController(ipcMain);
   registerNoteController(ipcMain);
   registerAppController(ipcMain);
+  registerActionController(ipcMain);
   registerFileController(ipcMain);
 
   const mainWindow = new BrowserWindow({
@@ -29,7 +31,7 @@ app.whenReady().then(async () => {
     height: 760,
     minWidth: 920,
     minHeight: 640,
-    title: 'Luna',
+    title: 'Skynet',
     webPreferences: {
       preload: getPreloadPath()
     },

@@ -17,13 +17,13 @@ type SetupData = {
   responseStyle: 'balanced' | 'concise' | 'detailed';
 };
 
-type LunaSettings = SetupData & {
+type SkynetSettings = SetupData & {
   preferredLanguage: string;
   modelName: string;
   setupCompleted: boolean;
 };
 
-type LunaChatMessage = {
+type SkynetChatMessage = {
   id: number;
   conversationId: number;
   role: 'user' | 'assistant';
@@ -31,14 +31,16 @@ type LunaChatMessage = {
   createdAt: string;
 };
 
-type LunaMemory = {
+type SkynetMemory = {
   id: number;
   content: string;
   category: string | null;
   createdAt: string;
 };
 
-type LunaAction =
+type SkynetFolderName = 'downloads' | 'desktop' | 'documents';
+
+type SkynetAction =
   | {
       type: 'CREATE_NOTE';
       needsPermission: true;
@@ -60,39 +62,46 @@ type LunaAction =
       payload: {
         query: string;
       };
+    }
+  | {
+      type: 'OPEN_FOLDER';
+      folderName: SkynetFolderName;
+      needsPermission: true;
     };
 
-type LunaChatResult = {
-  messages: LunaChatMessage[];
-  action?: LunaAction;
+type SkynetChatResult = {
+  mode: 'chat' | 'action_confirmation';
+  assistantMessage: string;
+  messages: SkynetChatMessage[];
+  action?: SkynetAction;
 };
 
 interface Window {
-  luna: {
+  skynet: {
     subscribeStatistics: (
       callback: (statistics: Statistics) => void
     ) => void;
     getStaticData: () => Promise<StaticData>;
     settings: {
-      getSettings: () => Promise<LunaSettings>;
-      saveSetup: (data: SetupData) => Promise<LunaSettings>;
+      getSettings: () => Promise<SkynetSettings>;
+      saveSetup: (data: SetupData) => Promise<SkynetSettings>;
     };
     chat: {
-      getMessages: () => Promise<LunaChatMessage[]>;
+      getMessages: () => Promise<SkynetChatMessage[]>;
       sendMessage: (message: {
         conversationId?: number;
         content: string;
-      }) => Promise<LunaChatResult>;
+      }) => Promise<SkynetChatResult>;
     };
     actions: {
       executeAction: (
-        action: LunaAction,
+        action: SkynetAction,
         conversationId?: number,
-      ) => Promise<{ message: string }>;
+      ) => Promise<{ success: boolean; message: string }>;
     };
     memory: {
-      getMemories: () => Promise<LunaMemory[]>;
-      createMemory: (content: string) => Promise<LunaMemory | null>;
+      getMemories: () => Promise<SkynetMemory[]>;
+      createMemory: (content: string) => Promise<SkynetMemory | null>;
       deleteMemory: (id: number) => Promise<boolean>;
       clearMemories: () => Promise<boolean>;
     };
